@@ -19,8 +19,9 @@ export const syncUserCreation = inngest.createFunction(
 // Inngest function to update user data in a database
 
 export const syncUserUpdation = inngest.createFunction(
-    {id:"sync-user-update"},
-    {event:"clerk/user.updated"},
+   /*  {id:"sync-user-update"},
+    {event:"clerk/user.updated"}, */
+    {id:"sync-user-update", event:"clerk/user.updated"},
     async ({event, step}) => {  
         const {data} = event;
         await prisma.user.update({
