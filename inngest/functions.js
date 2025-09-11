@@ -5,7 +5,11 @@ import prisma from "../lib/prisma.js";
 export const syncUserCreation = inngest.createFunction(
     /* {id:"sync-user-create"},
     {event:"clerk/user.created"}, */
-    {id:"sync-user-create", event:"clerk/user.created"},
+    {id:"sync-user-create"},{
+      triggers:[
+        {event:"clerk/user.created"}
+      ]  
+    },
     async ({event, step}) => {
         const {data} = event;
         await prisma.user.create({data:{
@@ -22,7 +26,11 @@ export const syncUserCreation = inngest.createFunction(
 export const syncUserUpdation = inngest.createFunction(
    /*  {id:"sync-user-update"},
     {event:"clerk/user.updated"}, */
-    {id:"sync-user-update", event:"clerk/user.updated"},
+    {id:"sync-user-update"},{
+      triggers:[
+        {event:"clerk/user.updated" },
+      ]
+    },
     async ({event, step}) => {  
         const {data} = event;
         await prisma.user.update({
@@ -41,7 +49,11 @@ export const syncUserUpdation = inngest.createFunction(
 export const syncUserDeletion = inngest.createFunction(
     /* {id:"sync-user-deletion"},
     {event:"clerk/user.deleted"}, */
-    {id:"sync-user-deletion", event:"clerk/user.deleted"},
+    {id:"sync-user-deletion"},{
+        triggers:[
+            {event:"clerk/user.deleted" },
+        ]
+    },
     async ({event, step}) => {  
         const {data} = event;
         await prisma.user.delete({
