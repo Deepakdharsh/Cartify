@@ -3,7 +3,7 @@ import { serve } from 'inngest/next'
 import { inngest } from '../../../inngest/client.js'
 
 // create an API that server zero functions
-export const {GET,POST} = serve({client:inngest,
+export const {GET,POST,PUT} = serve({client:inngest,
     functions:[
         /* your functions will be passed here later! */
         syncUserCreation,
