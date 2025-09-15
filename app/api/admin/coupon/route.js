@@ -1,3 +1,4 @@
+import { inngest } from "@/inngest/client";
 import prisma from "@/lib/prisma";
 import { authAdmin } from "@/middlewares/authAdmin";
 import { getAuth } from "@clerk/nextjs/server";
@@ -13,13 +14,36 @@ export async function POST(request) {
       return NextResponse.json({ error: "not authorized" }, { status: 401 });
     }
 
-    const { newCoupon:coupon } = await request.json();
+    const { newCoupon: coupon } = await request.json();
 
     console.log(coupon);
 
     coupon.code = coupon.code.toUpperCase();
 
-    await prisma.coupon.create({ data: coupon });
+    await prisma.coupon.create({ data: coupon }).then(async (c) => {
+      // Run Inngest function to delete coupon on expiry
+      await inngest.send({
+        name: "clerk/coupon.expired",
+        data: {
+          code: c.code,
+          expires_at: c.expiresAt,
+        },
+      });
+    });
+
+    // you can also do it like this
+    /* 
+    const createdCoupon = await prisma.coupon.create({ data: coupon });
+
+  // Run Inngest function to delete coupon on expiry
+  await inngest.send({
+    name: "clerk/coupon.expired",
+    data: {
+      code: createdCoupon.code,
+      expires_at: createdCoupon.expiresAt,
+    },
+  });
+    */
 
     return NextResponse.json({ message: "coupon added successfully" });
   } catch (error) {
@@ -69,16 +93,14 @@ export async function GET(request) {
       return NextResponse.json({ error: "not authorized" }, { status: 401 });
     }
 
-    const coupons = await prisma.coupon.findMany({})
+    const coupons = await prisma.coupon.findMany({});
 
-    return NextResponse.json({coupons})
+    return NextResponse.json({ coupons });
   } catch (error) {
-    
-      console.log(error);
-      return NextResponse.json(
-        { error: error?.code || error?.message },
-        { status: 400 }
-      );
-    
+    console.log(error);
+    return NextResponse.json(
+      { error: error?.code || error?.message },
+      { status: 400 }
+    );
   }
 }
