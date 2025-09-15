@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { authAdmin } from "@/middlewares/authAdmin";
 import { getAuth } from "@clerk/nextjs/server";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 // Add new coupon
 export async function POST(request) {
@@ -13,7 +13,9 @@ export async function POST(request) {
       return NextResponse.json({ error: "not authorized" }, { status: 401 });
     }
 
-    const { coupon } = await request.json();
+    const { newCoupon:coupon } = await request.json();
+
+    console.log(coupon);
 
     coupon.code = coupon.code.toUpperCase();
 
@@ -46,7 +48,7 @@ export async function DELETE(request) {
 
     await prisma.coupon.delete({ where: { code } });
 
-    return NextRequest.json({ message: "Coupon deleted successfully" });
+    return NextResponse.json({ message: "Coupon deleted successfully" });
   } catch (error) {
     console.log(error);
     return NextResponse.json(

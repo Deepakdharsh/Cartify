@@ -62,7 +62,7 @@ export default function AdminCoupons() {
   const deleteCoupon = async (code) => {
     // Logic to delete a coupon
     try {
-        const confirm = Window.confirm("Are you sure you want to delete this coupon?")
+        const confirm = window.confirm("Are you sure you want to delete this coupon?")
 
         if(!confirm) return 
 
