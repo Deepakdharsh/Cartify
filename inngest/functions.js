@@ -46,3 +46,35 @@ export const syncUserDeletion = inngest.createFunction(
         })
     }
 )
+
+// Inngest function to delete coupon on expiry
+
+// export const deleteCouponOnExpiry = inngest.createFunction(
+//     {id:"gocart-ecommerce-sync-user-deleteCoupon"},
+//     {event:"clerk/coupon.expired"},
+//     async ({event, step}) => {  
+//         const {data} = event;
+//         const expiryDate = new Date(data.expires_at)
+//         await step.sleepUntil("wait-for-expiry",expiryDate)
+//         await step.run("delete-coupon-from-database",async()=>{
+//             await prisma.coupon.delete({
+//                 where:{code:data.code}
+//             })
+//         })
+//     }
+// )
+
+export const deleteCouponOnExpiry = inngest.createFunction(
+    {id:"delete-coupon-on-expiry"},
+    {event:"clerk/coupon.expired"},
+    async ({event, step}) => {  
+        const {data} = event;
+        const expiryDate = new Date(data.expires_at)
+        await step.sleepUntil("wait-for-expiry",expiryDate)
+        await step.run("delete-coupon-from-database",async()=>{
+            await prisma.coupon.delete({
+                where:{code:data.code}
+            })
+        })
+    }
+)

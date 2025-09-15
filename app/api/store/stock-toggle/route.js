@@ -1,10 +1,8 @@
-
-// toggle stock of a product 
-
 import prisma from "@/lib/prisma"
 import { authSeller } from "@/middlewares/authSeller"
 import { NextResponse } from "next/server"
 
+// toggle stock of a product 
 export async function POST(request){
     try {
         const {userId} = getAuth(request)

@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import { getAuth } from "@clerk/nextjs/dist/types/server";
+import { getAuth } from "@clerk/nextjs/server";
 import { authAdmin } from "@/middlewares/authAdmin";
 
 // Get all approved stores

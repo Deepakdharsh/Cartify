@@ -1,6 +1,6 @@
 import { imagekit } from "@/configs/imagekit";
 import prisma from "@/lib/prisma";
-import { getAuth } from "@clerk/nextjs/dist/types/server";
+import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 // create the store
@@ -9,16 +9,17 @@ export async function POST(request) {
     const { userId } = getAuth(request);
     // get the data from the form
     const formData = await request.formData();
-
+    
     const name = formData.get("name");
     const username = formData.get("username");
-    const desciption = formData.get("desciption");
+    const description = formData.get("description");
     const email = formData.get("email");
     const contact = formData.get("contact");
-    const adress = formData.get("adress");
+    const address = formData.get("address");
     const image = formData.get("image");
 
-    if (!name || !username || !email || !contact || !adress || !desciption) {
+
+    if (!name || !username || !email || !contact || !address || !description || !image ) {
       return NextResponse.json(
         { error: "missing store info" },
         { status: 400 }
@@ -68,10 +69,10 @@ export async function POST(request) {
         userId,
         name: name.toString(),
         username: username.toString().toLowerCase(),
-        desciption: desciption.toString(),
+        description: description.toString(),
         email: email.toString(),
         contact: contact.toString(),
-        adress: adress.toString(),
+        address: address.toString(),
         logo: optimizedImage,
       },
     });

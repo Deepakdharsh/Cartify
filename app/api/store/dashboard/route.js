@@ -1,6 +1,5 @@
-
 import prisma from "@/lib/prisma";
-import { getAuth } from "@clerk/nextjs/dist/types/server";
+import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 // Get Dashboard data for a seller (total sales, total orders, total products , total earnings)

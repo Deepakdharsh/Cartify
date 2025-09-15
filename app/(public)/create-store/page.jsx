@@ -86,11 +86,12 @@ export default function CreateStore() {
       const formData = new FormData();
       formData.append("name", storeInfo.name);
       formData.append("username", storeInfo.username);
-      formData.append("desciption", storeInfo.description);
+      formData.append("description", storeInfo.description);
       formData.append("email", storeInfo.email);
       formData.append("contact", storeInfo.contact);
-      formData.append("adress", storeInfo.address);
+      formData.append("address", storeInfo.address);
       formData.append("image", storeInfo.image);
+
 
       const { data } = await axios.post("/api/store/create", formData, {
         headers: {

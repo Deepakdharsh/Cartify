@@ -1,4 +1,4 @@
-import { clerkClient } from "@clerk/nextjs/dist/types/server"
+import { clerkClient } from "@clerk/nextjs/server"
 
 
 export async function authAdmin(userId) {

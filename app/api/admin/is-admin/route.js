@@ -1,5 +1,5 @@
 import { authAdmin } from "@/middlewares/authAdmin";
-import { getAuth } from "@clerk/nextjs/dist/types/server";
+import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 
@@ -13,7 +13,7 @@ export async function GET(request) {
         return NextResponse.json({ error: "not authorized" }, { status: 401 });
     }
 
-    return new NextResponse({isAdmin});
+    return NextResponse.json({isAdmin});
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: error.code || error.message }, { status: 401 });
