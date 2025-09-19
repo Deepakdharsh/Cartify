@@ -1,11 +1,12 @@
 'use client'
+import Loading from "@/components/Loading"
 import ProductCard from "@/components/ProductCard"
+import axios from "axios"
+import { MailIcon, MapPinIcon } from "lucide-react"
+import Image from "next/image"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
-import { MailIcon, MapPinIcon } from "lucide-react"
-import Loading from "@/components/Loading"
-import Image from "next/image"
-import { dummyStoreData, productDummyData } from "@/assets/assets"
+import toast from "react-hot-toast"
 
 export default function StoreShop() {
 
@@ -15,9 +16,18 @@ export default function StoreShop() {
     const [loading, setLoading] = useState(true)
 
     const fetchStoreData = async () => {
-        setStoreInfo(dummyStoreData)
-        setProducts(productDummyData)
-        setLoading(false)
+        // setStoreInfo(dummyStoreData)
+        // setProducts(productDummyData)
+        try {
+            const {data} = await axios.get(`/api/store/data?username=${username}`)
+            setStoreInfo(data.store)
+            setProducts(data.store.Product)
+        } catch (error) {
+            console.error(error) 
+            toast.error(error?.response?.data?.error || error.message)
+        }finally{
+            setLoading(false)
+        }
     }
 
     useEffect(() => {

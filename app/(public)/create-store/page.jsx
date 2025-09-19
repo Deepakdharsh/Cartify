@@ -103,6 +103,8 @@ export default function CreateStore() {
       await fetchSellerStatus();
     } catch (error) {
       toast.error(error.response?.data?.error || "Something went wrong");
+    }finally{
+      setLoading(false)
     }
   };
 

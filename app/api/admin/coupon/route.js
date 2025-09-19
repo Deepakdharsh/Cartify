@@ -16,8 +16,6 @@ export async function POST(request) {
 
     const { newCoupon: coupon } = await request.json();
 
-    console.log(coupon);
-
     coupon.code = coupon.code.toUpperCase();
 
     await prisma.coupon.create({ data: coupon }).then(async (c) => {
@@ -47,7 +45,7 @@ export async function POST(request) {
 
     return NextResponse.json({ message: "coupon added successfully" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json(
       { error: error?.code || error?.message },
       { status: 400 }
@@ -74,7 +72,7 @@ export async function DELETE(request) {
 
     return NextResponse.json({ message: "Coupon deleted successfully" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json(
       { error: error?.code || error?.message },
       { status: 400 }
@@ -97,7 +95,7 @@ export async function GET(request) {
 
     return NextResponse.json({ coupons });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json(
       { error: error?.code || error?.message },
       { status: 400 }

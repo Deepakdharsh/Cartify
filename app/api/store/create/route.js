@@ -89,7 +89,7 @@ export async function POST(request) {
       { status: 200 }
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json(
       { error: error.code || error.message },
       { status: 500 }
@@ -113,7 +113,7 @@ export async function GET(request) {
 
     return NextResponse.json({ status: "not registered" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json(
       { error: error.code || error.message },
       { status: 500 }

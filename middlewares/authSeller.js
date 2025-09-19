@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma"
 
 export const authSeller = async (userId) => { 
     try {
-        const {user} = await prisma.user.findUnique({where:{id:userId}}) 
+        const user = await prisma.user.findUnique({where:{id:userId},include:{store:true}}) 
 
         if(user.store){
             if(user.store.status === "approved"){

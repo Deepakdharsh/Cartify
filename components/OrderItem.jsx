@@ -46,7 +46,6 @@ const OrderItem = ({ order }) => {
                 </td>
 
                 <td className="text-center max-md:hidden">{currency}{order.total}</td>
-
                 <td className="text-left max-md:hidden">
                     <p>{order.address.name}, {order.address.street},</p>
                     <p>{order.address.city}, {order.address.state}, {order.address.zip}, {order.address.country},</p>

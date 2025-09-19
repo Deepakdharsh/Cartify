@@ -24,10 +24,9 @@ const AdminLayout = ({ children }) => {
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log(data.isAdmin)
             setIsAdmin(data.isAdmin)
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }finally {
             setLoading(false)
         }

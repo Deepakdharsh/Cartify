@@ -42,7 +42,7 @@ export default function AdminDashboard() {
             })
             setDashboardData(data.dashboardData)
         } catch (error) {
-            console.log(error)
+            console.error(error)
             toast.error(error?.response?.data?.message || error.message)
         }finally{
             setLoading(false)

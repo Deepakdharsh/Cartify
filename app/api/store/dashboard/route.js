@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { authSeller } from "@/middlewares/authSeller";
 import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -27,8 +28,8 @@ export async function GET(request){
 
         const DashboardData = {
             ratings,
-            toOrders:orders.length,
-            totalEarnings:Math.round(orders.reduce((acc,order)=>acc+order.totalPrice,0)),
+            totalOrders:orders.length,
+            totalEarnings:Math.round(orders.reduce((acc,order)=>acc+order.total,0)),
             totalProducts:products.length,
         }
 

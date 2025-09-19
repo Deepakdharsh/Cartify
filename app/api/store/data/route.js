@@ -16,9 +16,11 @@ export async function GET(request){
 
         //  Get store info and inStock products with ratings
 
+        console.log(username)
+
         const store = await prisma.store.findUnique({
             where:{username},
-            include:{product:{include:{rating:true}}}
+            include:{Product:{include:{rating:true}}}
         })
 
         if(!store){
