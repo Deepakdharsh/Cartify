@@ -29,16 +29,58 @@ export default function StoreAddProduct() {
     category: "",
   });
   const [loading, setLoading] = useState(false);
+  const [aiUsed, setAiUsed] = useState(false);
 
   const { getToken } = useAuth();
   const onChangeHandler = (e) => {
     setProductInfo({ ...productInfo, [e.target.name]: e.target.value });
   };
 
+  const handleImageUpload = async (key,file)=>{
+    setImages(prev => ({...prev,[key]:file}))
+
+    if(key === "1" && file && !aiUsed){
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onloadend = async () => {
+        const base64String =  reader.result.split(",")[1]
+        const mimeType = file.type
+        const token = await getToken()
+
+        try {
+          await toast.promise(
+            axios.post('/api/store/ai',{baseImage:base64String,mimeType},{
+              headers:{
+                Authorization:`Bearer ${token}`
+              }
+            }),{
+              loading:"Analyzing image with AI...",
+              success:(res)=>{
+                const data = res.data
+                if(data.name && data.description){
+                  setProductInfo(prev =>({
+                    ...perv,
+                    name:data.name,
+                    description:data.description
+                  }))
+                  setAiUsed(true)
+                  return "AI filled product info "
+                }
+                return "AI could not analyze the iamge"
+              },
+              error:(error)=>error?.response?.data?.error || error.message
+            }
+          )
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    }
+  }
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     // Logic to add a product
-
     try {
       // If no images are uploaded then return
       if (!images[1] && !images[2] && !images[3] && !images[4]) {
@@ -115,7 +157,8 @@ export default function StoreAddProduct() {
               accept="image/*"
               id={`images${key}`}
               onChange={(e) =>
-                setImages({ ...images, [key]: e.target.files[0] })
+                // setImages({ ...images, [key]: e.target.files[0] })
+                handleImageUpload(key,e.target.files[0])
               }
               hidden
             />
