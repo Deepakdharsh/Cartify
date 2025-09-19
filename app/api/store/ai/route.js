@@ -1,11 +1,11 @@
 import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { openai } from "@/configs/openai";
+import { authSeller } from "@/middlewares/authSeller";
 
 async function main(base64Image, mimeType) {
-  const imagePath = "Path/to/agi/image.jpeg";
-  const base64Image = await encodeImage(imagePath);
-
+//   const imagePath = "Path/to/agi/image.jpeg";
+//   const base64Image = await encodeImage(imagePath);
   const messages = [
     {
       role: "system",
