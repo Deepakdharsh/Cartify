@@ -59,7 +59,7 @@ export default function StoreAddProduct() {
                 const data = res.data
                 if(data.name && data.description){
                   setProductInfo(prev =>({
-                    ...perv,
+                    ...prev,
                     name:data.name,
                     description:data.description
                   }))

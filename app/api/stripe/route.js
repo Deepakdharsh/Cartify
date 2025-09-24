@@ -6,9 +6,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(request) {
   try {
-    const body = await request.text();
-    const sig = request.headers.get("stripe-signature")
+    console.log("entered the session route");
 
+    const body = await request.text();
+    const sig = request.headers.get("stripe-signature");
     const event = stripe.webhooks.constructEvent(
       body,
       sig,
@@ -16,40 +17,50 @@ export async function POST(request) {
     );
 
     const handlePaymentIntent = async (paymentIntentId, isPaid) => {
-        const session = await stripe.checkout.sessions.list({payment_intent:paymentIntentId})
+      console.log("entered the handlePayment thing");
+      const session = await stripe.checkout.sessions.list({
+        payment_intent: paymentIntentId,
+      });
 
-        const {orderIds,userId,appId} = session.data[0].metadata
+      const { orderIds, userId, appId } = session.data[0].metadata;
 
-          if(appId !=="gocart"){
-        return NextResponse.json({received:true,message:"Invaild app id"})
-    }
+      if (appId !== "gocart") {
+        return NextResponse.json({ received: true, message: "Invaild app id" });
+      }
 
-    
-    const orderIdsArray = orderIds.split(',')
+      const orderIdsArray = orderIds.split(",");
 
-    if(isPaid){
+      if (isPaid) {
         // mark order as paid
-        await Promise.all(orderIdsArray.map(async(orderId)=>{
+        console.log("entered isPaid");
+        
+        await Promise.all(
+          orderIdsArray.map(async (orderId) => {
             await prisma.order.update({
-                where:{id:userId},
-                data:{isPaid:true}
-            })
-        }))
+              // where:{id:userId},
+              where: { id: orderId },
+              data: { isPaid: true },
+            });
+          })
+        );
 
         // delete cart from user
-        await prisma.user.update({
-            where:{id:userId},
-            data:{cart:{}}
-        })
-    }else{
-        // delete order from db
-        await Promise.all(orderIdsArray.map(async(orderId)=>{
-            await prisma.order.delete({
-                where:{id:orderId}
-            })
-        }))
-    }
+        const data = await prisma.user.update({
+          where: { id: userId },
+          data: { cart: {} },
+        });
 
+        console.log("updated cart data", data);
+      } else {
+        // delete order from db
+        await Promise.all(
+          orderIdsArray.map(async (orderId) => {
+            await prisma.order.delete({
+              where: { id: orderId },
+            });
+          })
+        );
+      }
     };
 
     switch (event.type) {
@@ -69,13 +80,13 @@ export async function POST(request) {
         break;
     }
 
-    return NextResponse.json({recevied:true})
+    return NextResponse.json({ received: true });
   } catch (error) {
-    console.error(error)
-    return NextResponse.json({error:error.message},{status:400})
+    console.error(error);
+    return NextResponse.json({ error: error.message }, { status: 400 });
   }
 }
 
 export const config = {
-    api:{bodyparser:false}
-}
+  api: { bodyParser: false },
+};

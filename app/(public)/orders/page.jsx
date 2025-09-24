@@ -27,6 +27,7 @@ export default function Orders() {
                         Authorization:`Bearer ${token}`
                     }
                 })
+                console.log("/order/get",data)
                 setOrders(data.orders)
             } catch (error) {
                 toast.error(error?.response?.data?.error || error.message)

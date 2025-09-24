@@ -1,9 +1,8 @@
 import prisma from "@/lib/prisma";
 import { getAuth } from "@clerk/nextjs/server";
 import { PaymentMethod } from "@prisma/client";
-import { Currency } from "lucide-react";
 import { NextResponse } from "next/server";
-import Stripe from "stripe"
+import Stripe from "stripe";
 
 export async function POST(request) {
   try {
@@ -48,7 +47,7 @@ export async function POST(request) {
       const userOrders = await prisma.order.findMany({ where: { userId } });
       if (userOrders.length > 0) {
         return NextResponse.json(
-          { error: "coupon vaild for new users" },
+          { error: "coupon vaid for new users" },
           { status: 404 }
         );
       }
@@ -127,16 +126,19 @@ export async function POST(request) {
       });
 
       orderIds.push(order.id);
+      console.log("order")
+      console.log(order)
+      console.log("order")
     }
 
     if(paymentMethod === "STRIPE"){
-      const stipe = Stripe(process.env.STRIPE_SECRET_KEY)
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
       const origin = await request.headers.get('origin')
-      const session = await stipe.checkout.sessions.create({
+      const session = await stripe.checkout.sessions.create({
         payment_method_types:['card'],
         line_items:[{
           price_data:{
-            Currency: "usd",
+            currency: "usd",
             product_data:{
               name:"order"
             },
@@ -144,7 +146,7 @@ export async function POST(request) {
           },
           quantity:1
         }],
-        expires_at:Mah.floor(Date.now() / 1000) + 30 * 60, // current time + 3o minutes
+        expires_at:Math.floor(Date.now() / 1000) + 30 * 60, // current time + 3o minutes
         mode:"payment",
         success_url:`${origin}/loading?nextUrl=orders`,
         cancel_url:`${origin}/cart`,
@@ -154,6 +156,8 @@ export async function POST(request) {
           appId:"gocart"
         }
       })
+
+      console.log("session",session)
 
       return NextResponse.json({session})
     }
@@ -166,6 +170,7 @@ export async function POST(request) {
 
     return NextResponse.json({ message: "orders placed successfully" });
   } catch (error) {
+    console.log("entered the error")
     console.error(error);
     return NextResponse.json(
       { error: error.code || error.message },
